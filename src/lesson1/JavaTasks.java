@@ -64,9 +64,9 @@ public class JavaTasks {
                 timeIn += 24 * 3600;
             }
             lTime.add(timeIn);
-        }//O(n)
+        }
         int[] listT = lTime.stream().mapToInt(Integer::intValue).toArray();
-        Sorts.quickSort(listT);//O(n^2)
+        Sorts.quickSort(listT);
         for (int e : listT) {
             {
                 if (e < 3600) {
@@ -82,12 +82,13 @@ public class JavaTasks {
                 }
                 fw.write(String.format("%02d:%02d:%02d", e / 3600, (e % 3600) / 60, e % 60) + " PM\n");
             }
-        }// O(n)
+        }
 
         fr.close();
         fw.close();
         br.close();
-        //=> T = O(n^2)
+        //=>Трудоемкость алгоритма T = O(n^2)
+        // R = O(n)
     }
 
     /**
@@ -130,9 +131,9 @@ public class JavaTasks {
                 addressNames.putIfAbsent(l, lStr);
                 addressNames.get(l).add(line.substring(0, line.length() - 3 - l.length()));
             }
-        }// O(n)
+        }
         for (List<String> e : addressNames.values()) {
-            Collections.sort(e); // O(n^2)
+            Collections.sort(e);
         }
         Map<String, List<Integer>> map = new HashMap<>();
         for (String e : addressNames.keySet()) {
@@ -141,19 +142,20 @@ public class JavaTasks {
             List<Integer> lStr = new ArrayList<>();
             map.putIfAbsent(str, lStr);
             map.get(str).add(i);
-        } //O(n)
+        }
         List<String> lConvert = new ArrayList<>(map.keySet());
         Collections.sort(lConvert);
         for (List<Integer> e : map.values()) {
             Collections.sort(e);
-        }//O(n)
+        }
         for (String e : lConvert) {
             for (Integer i : map.get(e)) {
                 printWriter.println(e + " " + i + " - " + String.join(", ", addressNames.get(e + " " + i)));
             }
         }//O(n)
         printWriter.close();
-    // => T = O(n^2)
+        // => T = O(n^2)
+        // R = O(n)
     }
 
 
@@ -192,25 +194,19 @@ public class JavaTasks {
         BufferedReader br = new BufferedReader(new FileReader(new File(inputName)));
         FileWriter fw = new FileWriter(new File(outputName));
         List<Integer> positiveList = new ArrayList<>();
-        List<Integer> negativeList = new ArrayList<>();
         String tem = br.readLine();
         while (tem != null) {
-            int a =(int) (Double.parseDouble(tem) * 10);
-            if(a >= 0) positiveList.add(a);
-            else negativeList.add(a*(-1));
+            int a =(int) (Double.parseDouble(tem) * 10) + 2730;
+            positiveList.add(a);
             tem = br.readLine();
-        }// O(n)
+        }
         int[] arrayPositive = positiveList.stream().mapToInt(i -> i).toArray();
-        int[] arrayNegative = negativeList.stream().mapToInt(i-> i).toArray();
-        arrayNegative = Sorts.countingSort(arrayNegative,2730);//O(n/2)
-        arrayPositive = Sorts.countingSort(arrayPositive,5000);//O(n/2)
-        for (int i = arrayNegative.length - 1; i >= 0; i-- ) {
-            fw.write("-"+((double) arrayNegative[i]) / 10 + "\n");
-        }//O(n/2)
-        for (int e : arrayPositive) fw.write(((double) e) / 10 + "\n");//O(n/2)
+        arrayPositive = Sorts.countingSort(arrayPositive,7730);//O(n/2)
+        for (int e : arrayPositive) fw.write((double)( e -2730)/ 10 + "\n");//O(n/2)
         fw.close();
         br.close();
         //=> T= O(n)
+        // R = O(n)
     }
 
     /**
@@ -250,9 +246,9 @@ public class JavaTasks {
         String line;
         while ((line = br.readLine()) != null) {
             sequence.add(Integer.parseInt(line));
-        }//O(n)
+        }
         int[] arrSequence = sequence.stream().mapToInt(i -> i).toArray();
-        Sorts.quickSort(arrSequence);//O(n^2)
+        Sorts.quickSort(arrSequence);
         int maxCount = 1;
         int minValue = arrSequence[0];
         int countValue = 1;
@@ -266,17 +262,18 @@ public class JavaTasks {
                 countValue = 0;
             }
             countValue++;
-        }//O(n)
+        }
         for (int e : sequence) {
             if (e != minValue) fw.write(e + "\n");
-        }//O(n)
+        }
         while (maxCount > 0) {
             fw.write(minValue + "\n");
             maxCount--;
-        }//O(n)
+        }
         fw.close();
         br.close();
         // => T = O(n^2)
+        // R = O(n)
     }
 
     /**
@@ -313,6 +310,7 @@ public class JavaTasks {
                indexFirst++;
            }
        }
-       //T = O(n)
+       //T = O(n) n размер массива second
+       // R = O(n)
 }
 }

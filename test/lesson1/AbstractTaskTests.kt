@@ -13,6 +13,21 @@ abstract class AbstractTaskTests : AbstractFileTests() {
 
     protected fun sortTimes(sortTimes: (String, String) -> Unit) {
         try {
+            sortTimes("input/time_inTest.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                    12:03:04 AM
+                    02:03:59 AM
+                    12:02:05 PM
+                    01:02:05 PM
+                """.trimIndent()
+            )
+        } finally {
+
+            File("temp.txt").delete()
+        }
+        try {
             sortTimes("input/time_in1.txt", "temp.txt")
             assertFileContent(
                 "temp.txt",
@@ -48,6 +63,18 @@ abstract class AbstractTaskTests : AbstractFileTests() {
     }
 
     protected fun sortAddresses(sortAddresses: (String, String) -> Unit) {
+        try {
+            sortAddresses("input/addr_inTest.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                    Гражданский 30 - Пыва Мфвыа, Фам Бас, Чан Чан
+                    Наук 25 - Нгуен Оань, Фам Нам
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
         try {
             sortAddresses("input/addr_in1.txt", "temp.txt")
             assertFileContent(

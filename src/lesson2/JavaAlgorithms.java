@@ -4,9 +4,11 @@ import kotlin.NotImplementedError;
 import kotlin.Pair;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class JavaAlgorithms {
@@ -35,42 +37,30 @@ public class JavaAlgorithms {
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(inputName));
-        int maxLine = 0;
-        int exchangeDifference = 0;
-        int firstPrice = 0;
-        int secondIndex = 0;
-        List<Integer> arrPrice = new ArrayList<>();
-        List<Integer> arrPrice1 = new ArrayList<>();
-        Pair<Integer, Integer> indexMaxExchangeDifference;
-        indexMaxExchangeDifference = new Pair(1, 2);
-        int priceFirst = Integer.parseInt(br.readLine());
-        arrPrice.add(priceFirst);
-        arrPrice1.add(priceFirst);
-        String line;
-        while ((line = br.readLine()) != null) {
-            if (maxLine > 0) {
-                arrPrice.add(Integer.parseInt(line));
-                arrPrice1.add(Integer.parseInt(line));
-                for (int j = 0; j < arrPrice1.size(); j++) {
-                    if (Integer.parseInt(line) < arrPrice1.get(j))
-                        arrPrice1.remove(j);
-                    else {
-                        if (Integer.parseInt(line) - arrPrice1.get(j) > exchangeDifference) {
-                            exchangeDifference = Integer.parseInt(line) - arrPrice1.get(j);
-                            firstPrice = arrPrice1.get(j);
-                            secondIndex = maxLine + 2;
-                        }
-                    }
+        BufferedReader br = new BufferedReader(new FileReader(new File(inputName)));
+        List<Integer> list = new ArrayList<>();
+        String str = br.readLine();
+        while (str != null) {
+            list.add(Integer.parseInt(str));
+            str = br.readLine();
+        }
+        Pair<Integer, Integer> res = null;
+        int max = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (i != 0 && list.get(i) > list.get(i - 1)) {
+                continue;
+            }
+            for (int j = i + 1; j < list.size(); j++) {
+                if (list.get(j) - list.get(i) > max) {
+                    max = list.get(j) - list.get(i);
+                    res = new Pair<>(i, j);
                 }
             }
-            maxLine++;
         }
-        for (int j = 0; j < arrPrice.size(); j++) {
-            if (arrPrice.get(j) == firstPrice) return new Pair(j + 2, secondIndex);
-        }
-        br.close();
-        return indexMaxExchangeDifference;
+        assert res != null;
+        return new Pair<>(res.component1() + 1, res.component2() + 1);
+        // T =O(n^2) n размер list
+        //R = O(n)
     }
 
     /**
@@ -123,7 +113,13 @@ public class JavaAlgorithms {
      * но приветствуется попытка решить её самостоятельно.
      */
     static public int josephTask(int menNumber, int choiceInterval) {
-        throw new NotImplementedError();
+        int res = 0;
+        for(int i = 2; i <= menNumber; i++){
+            res = (choiceInterval + res) % i;
+        }
+        return res +1;
+        //T = O(n) n : menNumber
+        // R = O(1)
     }
 
     /**
@@ -138,7 +134,26 @@ public class JavaAlgorithms {
      * вернуть ту из них, которая встречается раньше в строке first.
      */
     static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+        String res ="";
+        int fLength = firs.length();
+        int sLength = second.length();
+        for(int i = 0; i < fLength; i++)
+            for(int j = 0; j < sLength; j++ ){
+               if(firs.charAt(i) == second.charAt(j)){
+                   int m = 1;
+                   String str = String.valueOf(firs.charAt(i));
+                   while(i + m < fLength && j+ m < sLength && firs.charAt(i+m) == second.charAt(j+m))
+                   {
+                       str +=  String.valueOf(firs.charAt(i+m));
+                       m++;
+                   }
+                if (str.length() > res.length()) res = str;
+               }
+            }
+        return res;
+            // n = max(fLength,sLength)
+        //Трудоемкость алгоритм - O(n^3)
+        // R = O(1)
     }
 
     /**
@@ -152,6 +167,21 @@ public class JavaAlgorithms {
      * Единица простым числом не считается.
      */
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        if (limit <= 1) return 0;
+        int count = 0;
+        int[] list = new int[limit+1];
+        list[0]=0;
+        list[1]=0;
+        for(int i = 2; i <= limit; i++) list[i] = 1;
+        for(int i = 2; i <= (int) Math.sqrt(limit); i++){
+            if(list[i] == 1)
+                for(int j = 2; j <= limit /i; j++ ) list[i*j]=0;
+        }
+        for (int e : list){
+            if(e ==1) count++;
+        }
+        return count;
     }
+    // T = O(nlogn) n= limit
+    // R = O(n)
 }
