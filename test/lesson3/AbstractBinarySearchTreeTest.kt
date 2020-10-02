@@ -8,6 +8,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@Suppress("TYPE_INFERENCE_ONLY_INPUT_TYPES_WARNING")
 abstract class AbstractBinarySearchTreeTest {
 
     abstract fun create(): CheckableSortedSet<Int>
@@ -218,6 +219,30 @@ abstract class AbstractBinarySearchTreeTest {
         }
     }
 
+    protected fun doMyTestIterator() {
+        implementationTest { create().iterator().hasNext() }
+        implementationTest { create().iterator().next() }
+        val binaryTree = create()
+        val treeTest = TreeSet<Int>()
+        val random = Random()
+
+        for (e in 1..1000) {
+            treeTest.add(random.nextInt(1000))
+        }
+        for (e in treeTest) {
+            binaryTree += e
+        }
+        val iterator = binaryTree.iterator()
+        val iterator1 = treeTest.iterator()
+        while (iterator.hasNext()) {
+            assertEquals(iterator.next(), iterator1.next())
+        }
+        assertFalse(iterator.hasNext())
+        assertFalse(iterator1.hasNext())
+        assertFailsWith<java.lang.IllegalStateException> { iterator.next() }
+
+    }
+
     protected fun doIteratorRemoveTest() {
         implementationTest { create().iterator().remove() }
         val random = Random()
@@ -287,7 +312,7 @@ abstract class AbstractBinarySearchTreeTest {
 
     protected fun doMyTestIteratorRemove() {
         implementationTest { create().remove(0) }
-        val random = Random();
+        val random = Random()
         val binarySet = create()
         val treeTess = TreeSet<Int>()
         val list = mutableSetOf<Int>()
@@ -296,9 +321,9 @@ abstract class AbstractBinarySearchTreeTest {
         }
         for (e in list) {
             treeTess += e
-            binarySet += e;
+            binarySet += e
         }
-        val re = list.elementAt(random.nextInt(list.size));
+        val re = list.elementAt(random.nextInt(list.size))
         treeTess.remove(re)
 
         val iterator = binarySet.iterator()

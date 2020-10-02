@@ -41,6 +41,7 @@ class BinarySearchTreeTest : AbstractBinarySearchTreeTest() {
     @Tag("5")
     fun iteratorTestJava() {
         doIteratorTest()
+        doMyTestIterator()
     }
 
     @Test
