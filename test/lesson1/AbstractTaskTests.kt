@@ -13,21 +13,6 @@ abstract class AbstractTaskTests : AbstractFileTests() {
 
     protected fun sortTimes(sortTimes: (String, String) -> Unit) {
         try {
-            sortTimes("input/time_inTest.txt", "temp.txt")
-            assertFileContent(
-                "temp.txt",
-                """
-                    12:03:04 AM
-                    02:03:59 AM
-                    12:02:05 PM
-                    01:02:05 PM
-                """.trimIndent()
-            )
-        } finally {
-
-            File("temp.txt").delete()
-        }
-        try {
             sortTimes("input/time_in1.txt", "temp.txt")
             assertFileContent(
                 "temp.txt",
@@ -62,19 +47,25 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         }
     }
 
-    protected fun sortAddresses(sortAddresses: (String, String) -> Unit) {
+    protected fun mySortTimes(sortTimes: (String, String) -> Unit) {
         try {
-            sortAddresses("input/addr_inTest.txt", "temp.txt")
+            sortTimes("input/time_inTest.txt", "temp.txt")
             assertFileContent(
                 "temp.txt",
                 """
-                    Гражданский 30 - Пыва Мфвыа, Фам Бас, Чан Чан
-                    Наук 25 - Нгуен Оань, Фам Нам
+                    12:03:04 AM
+                    02:03:59 AM
+                    12:02:05 PM
+                    01:02:05 PM
                 """.trimIndent()
             )
         } finally {
+
             File("temp.txt").delete()
         }
+    }
+
+    protected fun sortAddresses(sortAddresses: (String, String) -> Unit) {
         try {
             sortAddresses("input/addr_in1.txt", "temp.txt")
             assertFileContent(
@@ -97,6 +88,21 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortAddresses("input/addr_in3.txt", "temp.txt")
             assertFileContent("temp.txt", File("input/addr_out3.txt").readLines())
+        } finally {
+            File("temp.txt").delete()
+        }
+    }
+
+    protected fun mySortAddresses(sortAddresses: (String, String) -> Unit) {
+        try {
+            sortAddresses("input/addr_inTest.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                    Гражданский 30 - Пыва Мфвыа, Фам Бас, Чан Чан
+                    Наук 25 - Нгуен Оань, Фам Нам
+                """.trimIndent()
+            )
         } finally {
             File("temp.txt").delete()
         }
@@ -206,6 +212,28 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         File("temp_sequence.txt").bufferedWriter().writeNumbers(numbers)
 
         return PerfResult(size = numbers.size, data = Unit)
+    }
+
+    protected fun mySortTemperatures(sortTemperatures: (String, String) -> Unit) {
+        try {
+            sortTemperatures("input/myTemp.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                    -100.2
+                    -39.5
+                    -36.8
+                    -30.5
+                    12.3
+                    21.3
+                    25.4
+                    26.4
+                    98.3
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
     }
 
     protected fun sortSequence(sortSequence: (String, String) -> Unit) {
@@ -323,6 +351,29 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         }
 
         println("sortSequence: $perf")
+    }
+
+    protected fun mySortSequence(sortSequence: (String, String) -> Unit) {
+        try {
+            sortSequence("input/mySeq.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                        2
+                        3
+                        4
+                        5
+                        2
+                        3
+                        5
+                        4
+                        1
+                        1
+                    """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
     }
 
     private fun generateArrays(
