@@ -164,6 +164,16 @@ abstract class AbstractBinarySearchTreeTest {
         }
     }
 
+    protected fun doMyTestRemove() {
+        implementationTest { create().remove(0) }
+        val binarySet = create()
+        for (i in 10 downTo 1) {
+            binarySet += i
+        }
+        assertTrue(binarySet.remove(1))
+        assertFalse(binarySet.remove(11))
+    }
+
     protected fun doIteratorTest() {
         implementationTest { create().iterator().hasNext() }
         implementationTest { create().iterator().next() }

@@ -101,8 +101,64 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      */
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+      if(!contains(o)) {
+          System.out.println("don't find");
+          return false;
+      }
+      @SuppressWarnings("unchecked")
+      T t = (T) o;
+
+      Node <T> node = root;
+      Node<T> nodeParent = null;
+      boolean left = false;
+
+      while(node.value.compareTo(t) != 0) {
+          nodeParent = node;
+          if (node.value.compareTo(t) < 0) {
+              left = false;
+              node = node.right;
+          } else {
+              left = true;
+              node = node.left;
+          }
+      }
+          if(node.left == null){
+              if(node == root) root = node.right;
+              else
+             if(left) nodeParent.left = node.right;
+             else nodeParent.right = node.right;
+          }else
+              if(node.right == null){
+                  if(node == root) root = node.left;
+                  else
+                  if (left) nodeParent.left = node.left;
+                  else nodeParent.right = node.left;
+              }
+              else{
+                  Node<T> maxNode = node.left;
+                  Node<T> perNode = node;
+
+                  while (maxNode.right != null) {
+                      perNode = maxNode;
+                      maxNode = maxNode.right;
+                  }
+                  if (maxNode != node.left) {
+                      perNode.right = maxNode.left;
+                      maxNode.left = node.left;
+                  }
+                  maxNode.right = node.right;
+                  if (node == root) {
+                      root = maxNode;
+                  } else if (left) {
+                      nodeParent.left = maxNode;
+                  } else {
+                      nodeParent.right = maxNode;
+                  }
+              }
+
+        this.size --;
+      return true;
+
     }
 
     @Nullable
