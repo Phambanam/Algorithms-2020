@@ -1,6 +1,8 @@
 package lesson3;
 
 import java.util.*;
+
+import com.sun.source.tree.BinaryTree;
 import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -156,7 +158,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                   }
               }
 
-        this.size --;
+          size --;
       return true;
 
     }
@@ -174,10 +176,22 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     }
 
     public class BinarySearchTreeIterator implements Iterator<T> {
-
+        private int location = 0;
+        private Node<T> node = null;
+        private List<Node<T>> listNode ;
+        private int count = 0;
         private BinarySearchTreeIterator() {
-            // Добавьте сюда инициализацию, если она необходима.
+            listNode = new ArrayList<>();
+            addNode(root);
         }
+        public void addNode(Node<T> node){
+        if(node != null){
+            addNode(node.left);
+            listNode.add(node);
+            addNode(node.right);
+        }
+        }
+
 
         /**
          * Проверка наличия следующего элемента
@@ -191,8 +205,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          */
         @Override
         public boolean hasNext() {
-            // TODO
-            throw new NotImplementedError();
+
+            return location < listNode.size();
         }
 
         /**
@@ -210,8 +224,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          */
         @Override
         public T next() {
-            // TODO
-            throw new NotImplementedError();
+            if( location == listNode.size() ) throw new IllegalStateException();
+            node =  listNode.get(location++);
+            if(node == null  ) throw new NoSuchElementException();
+            return node.value;
         }
 
         /**
@@ -227,9 +243,18 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          * Сложная
          */
         @Override
-        public void remove() {
-            // TODO
-            throw new NotImplementedError();
+        public void remove(){
+            if( location == 0 ) throw new IllegalStateException();
+            count++;
+
+            if(count >=2 )
+                throw new IllegalStateException();
+            else
+            {
+                BinarySearchTree.this.remove( listNode.get(location - 1).value);
+                listNode.remove(location - 1);
+                location--;
+            }
         }
     }
 

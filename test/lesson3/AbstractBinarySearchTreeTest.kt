@@ -1,11 +1,12 @@
 package lesson3
 
+import org.junit.jupiter.api.assertDoesNotThrow
 import java.util.*
 import kotlin.math.abs
-import kotlin.test.*
-import org.junit.jupiter.api.assertDoesNotThrow
-import kotlin.IllegalStateException
-import kotlin.NoSuchElementException
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 abstract class AbstractBinarySearchTreeTest {
 
@@ -282,6 +283,30 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+    }
+
+    protected fun doMyTestIteratorRemove() {
+        implementationTest { create().remove(0) }
+        val random = Random();
+        val binarySet = create()
+        val treeTess = TreeSet<Int>()
+        val list = mutableSetOf<Int>()
+        for (e in 1..1000) {
+            list.add(e)
+        }
+        for (e in list) {
+            treeTess += e
+            binarySet += e;
+        }
+        val re = list.elementAt(random.nextInt(list.size));
+        treeTess.remove(re)
+
+        val iterator = binarySet.iterator()
+        while (iterator.hasNext()) {
+            val e = iterator.next()
+            if (re == e) iterator.remove()
+        }
+        assertEquals(treeTess, binarySet)
     }
 
     protected fun doSubSetTest() {
