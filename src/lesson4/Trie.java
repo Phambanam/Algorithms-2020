@@ -2,6 +2,7 @@ package lesson4;
 
 import java.util.*;
 import kotlin.NotImplementedError;
+import lesson3.BinarySearchTree;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +14,6 @@ public class Trie extends AbstractSet<String> implements Set<String> {
     private static class Node {
         Map<Character, Node> children = new LinkedHashMap<>();
     }
-
     private Node root = new Node();
 
     private int size = 0;
@@ -67,6 +67,12 @@ public class Trie extends AbstractSet<String> implements Set<String> {
         if (modified) {
             size++;
         }
+
+        System.out.println(root.children.keySet());
+
+        System.out.println(element);
+        System.out.println("------------------ ");
+
         return modified;
     }
 
@@ -92,8 +98,39 @@ public class Trie extends AbstractSet<String> implements Set<String> {
     @NotNull
     @Override
     public Iterator<String> iterator() {
-        // TODO
-        throw new NotImplementedError();
+        return new TreeIterator();
     }
+    public class TreeIterator implements Iterator{
+        private int location = 0;
+        private Node node = null;
+        private List<Node> listNode;
+        private List<String> lString;
+        private int count = 0;
+        private TreeIterator() {
+            listNode = new ArrayList<>();
+            listNode.add(root);
+        }
+        public void addNode(Node node){
+               if(node != null) {
+                   addNode( node) ;
+               }
+               listNode.add(node);
+        }
+        @Override
+        public boolean hasNext() {
+            return location < listNode.size();
+        }
 
+        @Override
+        public String next() {
+            if( location == listNode.size() ) throw new IllegalStateException();
+
+            return null;
+        }
+
+        @Override
+        public void remove() {
+
+        }
+    }
 }

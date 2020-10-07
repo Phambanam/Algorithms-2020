@@ -160,7 +160,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
           size --;
       return true;
-
+        // трудоёмкост : O(log(n)) в средним случае, O(n) в худшем случае n- количество узлов дерева
+        // ресурсоёмкост : O(1)
     }
 
     @Nullable
@@ -207,6 +208,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         public boolean hasNext() {
 
             return location < listNode.size();
+
         }
 
         /**
@@ -228,6 +230,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
             node =  listNode.get(location++);
             if(node == null  ) throw new NoSuchElementException();
             return node.value;
+            // трудоёмкост : O(1)
+            // ресурсоёмкост : O(n) n - количество елементов в list
         }
 
         /**
@@ -256,6 +260,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                 location--;
             }
         }
+        // трудоёмкост : O(log(n)) в средним случае, O(n) в худшем случае n- количество узлов дерева
+        // ресурсоёмкост : O(1)
     }
 
     /**

@@ -46,7 +46,6 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(3 to 4, optimizeBuyAndSell("input/buysell_in1.txt"))
         assertEquals(8 to 12, optimizeBuyAndSell("input/buysell_in2.txt"))
         assertEquals(3 to 4, optimizeBuyAndSell("input/buysell_in3.txt"))
-        assertEquals(1 to 2, optimizeBuyAndSell("input/buysell_TEst.txt"))
         try {
             val expectedAnswer = generatePrices(1000)
             assertEquals(expectedAnswer, optimizeBuyAndSell("temp_prices.txt"))
@@ -59,6 +58,10 @@ abstract class AbstractAlgorithmsTests {
         } finally {
             File("temp_prices.txt").delete()
         }
+    }
+
+    fun myOptimizeBuyAndSell(myOptimizeBuyAndSell: (String) -> Pair<Int, Int>) {
+        assertEquals(1 to 2, myOptimizeBuyAndSell("input/buysell_TEst.txt"))
     }
 
     fun josephTask(josephTask: (Int, Int) -> Int) {
@@ -74,9 +77,13 @@ abstract class AbstractAlgorithmsTests {
         }
     }
 
+    fun myJosephTask(josephTask: (Int, Int) -> Int) {
+        assertEquals(5, josephTask(10, 4))
+        assertEquals(8, josephTask(16, 3))
+    }
+
     fun longestCommonSubstring(longestCommonSubstring: (String, String) -> String) {
         assertEquals("", longestCommonSubstring("мой мир", "я"))
-        assertEquals("phamnam", longestCommonSubstring("Phamphamnam", "phamnam123"))
         assertEquals("зд", longestCommonSubstring("здравствуй мир", "мы здесь"))
         assertEquals("СЕРВАТОР", longestCommonSubstring("ОБСЕРВАТОРИЯ", "КОНСЕРВАТОРЫ"))
         assertEquals(
@@ -122,6 +129,11 @@ abstract class AbstractAlgorithmsTests {
                 File("input/ruslan_ludmila_2.txt").readText()
             ).trim()
         )
+    }
+
+    fun myLongestCommonSubstring(longestCommonSubstring: (String, String) -> String) {
+        assertEquals("", longestCommonSubstring("", ""))
+        assertEquals("Phamnam", longestCommonSubstring("Phamnam123","2Phamnam"));
     }
 
     fun calcPrimesNumber(calcPrimesNumber: (Int) -> Int) {

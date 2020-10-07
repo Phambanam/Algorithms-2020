@@ -1,9 +1,12 @@
 package lesson4
 
+import ru.spbstu.kotlin.generate.util.nextString
 import java.util.*
 import kotlin.math.abs
-import ru.spbstu.kotlin.generate.util.nextString
-import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 abstract class AbstractTrieTest {
 
@@ -40,6 +43,9 @@ abstract class AbstractTrieTest {
                 if (trie.add(string)) {
                     wordCounter++
                 }
+
+                if (string !in trie) println("test");
+
                 assertTrue(
                     string in trie,
                     "An element wasn't added to trie when it should've been."
@@ -90,6 +96,7 @@ abstract class AbstractTrieTest {
             val iterator2 = trieSet.iterator()
             println("Checking if calling hasNext() changes the state of the iterator...")
             while (iterator1.hasNext()) {
+                println(iterator1.next() + " lol" )
                 assertEquals(
                     iterator2.next(), iterator1.next(),
                     "Calling TrieIterator.hasNext() changes the state of the iterator."

@@ -87,7 +87,7 @@ public class JavaTasks {
         fr.close();
         fw.close();
         br.close();
-        //=>Трудоемкость алгоритма T = O(n^2)
+        //=>Трудоемкость алгоритма T = O(nlog(n)) n размер listT
         // R = O(n)
     }
 
@@ -154,7 +154,7 @@ public class JavaTasks {
             }
         }//O(n)
         printWriter.close();
-        // => T = O(n^2)
+        // => T = O(n^2) n = размер map
         // R = O(n)
     }
 
@@ -205,7 +205,7 @@ public class JavaTasks {
         for (int e : arrayPositive) fw.write((double)( e -2730)/ 10 + "\n");//O(n/2)
         fw.close();
         br.close();
-        //=> T= O(n)
+        //=> T= O(n)n = max( 7730, PositiveInt.size)
         // R = O(n)
     }
 
@@ -272,7 +272,7 @@ public class JavaTasks {
         }
         fw.close();
         br.close();
-        // => T = O(n^2)
+        // => T = O(n^2) n = arrSequence.length;
         // R = O(n)
     }
 

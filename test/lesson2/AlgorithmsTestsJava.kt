@@ -8,18 +8,21 @@ class AlgorithmsTestsJava : AbstractAlgorithmsTests() {
     @Tag("2")
     fun testOptimizeBuyAndSellJava() {
         optimizeBuyAndSell { JavaAlgorithms.optimizeBuyAndSell(it) }
+        myOptimizeBuyAndSell { JavaAlgorithms.optimizeBuyAndSell(it) }
     }
 
     @Test
     @Tag("2")
     fun testJosephTaskJava() {
         josephTask { menNumber, choiceInterval -> JavaAlgorithms.josephTask(menNumber, choiceInterval) }
+        myJosephTask { menNumber, choiceInterval -> JavaAlgorithms.josephTask(menNumber, choiceInterval) }
     }
 
     @Test
     @Tag("4")
     fun testLongestCommonSubstringJava() {
         longestCommonSubstring { first, second -> JavaAlgorithms.longestCommonSubstring(first, second) }
+        myLongestCommonSubstring { first, second -> JavaAlgorithms.longestCommonSubstring(first, second) }
     }
 
     @Test

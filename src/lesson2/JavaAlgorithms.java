@@ -134,26 +134,26 @@ public class JavaAlgorithms {
      * вернуть ту из них, которая встречается раньше в строке first.
      */
     static public String longestCommonSubstring(String firs, String second) {
-        String res ="";
+        int maxLength = 0;
+        int location = 0;
         int fLength = firs.length();
         int sLength = second.length();
+        int[][] max = new int [fLength][sLength];
         for(int i = 0; i < fLength; i++)
             for(int j = 0; j < sLength; j++ ){
                if(firs.charAt(i) == second.charAt(j)){
-                   int m = 1;
-                   String str = String.valueOf(firs.charAt(i));
-                   while(i + m < fLength && j+ m < sLength && firs.charAt(i+m) == second.charAt(j+m))
-                   {
-                       str +=  String.valueOf(firs.charAt(i+m));
-                       m++;
+                   max[i][j] = (i > 0 && j > 0) ? max[i-1][j-1] + 1 : 1;
+                   if(max[i][j] > maxLength){
+                       maxLength = max[i][j];
+                      location = i;
                    }
-                if (str.length() > res.length()) res = str;
-               }
+               } else max[i][j] = 0;
             }
-        return res;
-            // n = max(fLength,sLength)
-        //Трудоемкость алгоритм - O(n^3)
-        // R = O(1)
+        if(maxLength ==0 ) return "";
+        else return firs.substring(location - maxLength + 1, location + 1 );
+
+        //Трудоемкость алгоритм - O(fLength*sLength)
+        // R = O(fLength*sLength)
     }
 
     /**
@@ -182,6 +182,6 @@ public class JavaAlgorithms {
         }
         return count;
     }
-    // T = O(nlogn) n= limit
-    // R = O(n)
+    // T = O(nLogn) n= limit
+    // R = O(n + 1 )
 }
