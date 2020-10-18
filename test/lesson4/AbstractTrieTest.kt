@@ -44,7 +44,7 @@ abstract class AbstractTrieTest {
                     wordCounter++
                 }
 
-                if (string !in trie) println("test");
+                if (string !in trie) println("test")
 
                 assertTrue(
                     string in trie,
@@ -96,7 +96,6 @@ abstract class AbstractTrieTest {
             val iterator2 = trieSet.iterator()
             println("Checking if calling hasNext() changes the state of the iterator...")
             while (iterator1.hasNext()) {
-                println(iterator1.next() + " lol" )
                 assertEquals(
                     iterator2.next(), iterator1.next(),
                     "Calling TrieIterator.hasNext() changes the state of the iterator."
