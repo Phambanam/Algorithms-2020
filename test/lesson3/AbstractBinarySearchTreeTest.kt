@@ -467,6 +467,7 @@ abstract class AbstractBinarySearchTreeTest {
             val fromElement = random.nextInt(50)
             val toElement = random.nextInt(50) + 50
             val controlSubSet = controlSet.subSet(fromElement, toElement)
+            println("$fromElement  :   $toElement")
             val expectedFirst = try {
                 controlSubSet.first()
             } catch (e: NoSuchElementException) {
@@ -480,6 +481,8 @@ abstract class AbstractBinarySearchTreeTest {
             println("Control set: $controlSet")
             println("Control subset: $controlSubSet")
             val subSet = binarySet.subSet(fromElement, toElement)
+
+            println("$fromElement  :   $toElement")
             val actualFirst = try {
                 subSet.first()
             } catch (e: NoSuchElementException) {

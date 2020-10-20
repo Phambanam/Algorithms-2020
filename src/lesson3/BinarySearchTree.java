@@ -352,6 +352,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
             current = current.left;
         }
         return current.value;
+
     }
 
     @Override
@@ -401,7 +402,7 @@ final class mySortedSet<T extends Comparable<T>> extends AbstractSet<T> implemen
         this.eEnd = eEnd;
     }
 
-    final boolean inRange(Object o) {
+    final boolean myCompare(Object o) {
         @SuppressWarnings("unchecked")
         T t = (T) o;
         if (eStart != null && eEnd != null) {
@@ -415,19 +416,19 @@ final class mySortedSet<T extends Comparable<T>> extends AbstractSet<T> implemen
 
     @Override
     public boolean add(T t) {
-        if (!inRange(t)) throw new IllegalArgumentException();
-        return inRange(t) && m.add(t);
+        if (!myCompare(t)) throw new IllegalArgumentException();
+        return myCompare(t) && m.add(t);
     }
 
     @Override
     public boolean remove(Object o) {
-        if (!inRange(o)) throw new IllegalArgumentException();
-        return inRange(o) && m.remove(o);
+        if (!myCompare(o)) throw new IllegalArgumentException();
+        return myCompare(o) && m.remove(o);
     }
 
     @Override
     public boolean contains(Object o) {
-        return inRange(o) && m.contains(o);
+        return myCompare(o) && m.contains(o);
     }
 
     @Override
@@ -445,6 +446,8 @@ final class mySortedSet<T extends Comparable<T>> extends AbstractSet<T> implemen
     public Comparator<? super T> comparator() {
         return null;
     }
+
+
 
     @NotNull
     @Override
@@ -473,13 +476,13 @@ final class mySortedSet<T extends Comparable<T>> extends AbstractSet<T> implemen
             return m.first();
         } else if (toEnd) {
             return eStart;
-        } else {
+        } else
+            {
             Iterator<T> bIterator = m.iterator();
             T current = null;
             while (bIterator.hasNext()) {
                 current = bIterator.next();
-                if (current.compareTo(eStart) == 0) {
-                    current = bIterator.next();
+                if (current.compareTo(eStart) >= 0) {
                     break;
                 }
             }
@@ -498,7 +501,7 @@ final class mySortedSet<T extends Comparable<T>> extends AbstractSet<T> implemen
             T sCurrent = null;
             while (bIterator.hasNext()) {
                 current = bIterator.next();
-                if (current.compareTo(eEnd) == 0) {
+                if (current.compareTo(eEnd) >= 0) {
                     break;
                 }
                 sCurrent = current;
