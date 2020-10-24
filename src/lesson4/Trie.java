@@ -1,20 +1,22 @@
 package lesson4;
 
-import java.util.*;
-import kotlin.NotImplementedError;
-import lesson3.BinarySearchTree;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
 
 /**
  * Префиксное дерево для строк
  */
 public class Trie extends AbstractSet<String> implements Set<String> {
 
-    private static class Node {
+    static class Node {
+        Character c;
         Map<Character, Node> children = new LinkedHashMap<>();
+        boolean isLeaf = false;
     }
-    private Node root = new Node();
+
+    public Node root = new Node();
 
     private int size = 0;
 
@@ -37,7 +39,9 @@ public class Trie extends AbstractSet<String> implements Set<String> {
     private Node findNode(String element) {
         Node current = root;
         for (char character : element.toCharArray()) {
-            if (current == null) return null;
+            if (current == null) {
+                return null;
+            }
             current = current.children.get(character);
         }
         return current;
@@ -67,12 +71,7 @@ public class Trie extends AbstractSet<String> implements Set<String> {
         if (modified) {
             size++;
         }
-
-        System.out.println(root.children.keySet());
-
-        System.out.println(element);
-        System.out.println("------------------ ");
-
+        current.isLeaf = true;
         return modified;
     }
 
@@ -88,11 +87,12 @@ public class Trie extends AbstractSet<String> implements Set<String> {
         return false;
     }
 
+
     /**
      * Итератор для префиксного дерева
-     *
+     * <p>
      * Спецификация: {@link Iterator} (Ctrl+Click по Iterator)
-     *
+     * <p>
      * Сложная
      */
     @NotNull
@@ -100,37 +100,59 @@ public class Trie extends AbstractSet<String> implements Set<String> {
     public Iterator<String> iterator() {
         return new TreeIterator();
     }
-    public class TreeIterator implements Iterator{
+
+    public class TreeIterator implements Iterator {
         private int location = 0;
-        private Node node = null;
-        private List<Node> listNode;
-        private List<String> lString;
+        private List<String> listNode;
+        private String str = "";
         private int count = 0;
-        private TreeIterator() {
+
+        public TreeIterator() {
             listNode = new ArrayList<>();
-            listNode.add(root);
+            addString(root, 0, new StringBuilder());
         }
-        public void addNode(Node node){
-               if(node != null) {
-                   addNode( node) ;
-               }
-               listNode.add(node);
+
+        public void addString(Node node, int level, StringBuilder sequence) {
+            Map<Character, Node> chil = node.children;
+            Object[] cha = chil.keySet().toArray();
+            for (Object character : cha) {
+                if ((char) character == (char) 0)
+                    listNode.add(sequence.toString());
+                sequence = sequence.insert(level, character);
+                addString(chil.get( character), level + 1, sequence);
+                sequence.deleteCharAt(level);
+            }
         }
+
         @Override
         public boolean hasNext() {
             return location < listNode.size();
         }
 
         @Override
-        public String next() {
-            if( location == listNode.size() ) throw new IllegalStateException();
-
-            return null;
+        public Object next() {
+            if (location == listNode.size()) throw new IllegalStateException();
+            str = listNode.get(location++);
+            if (str.equals("")) throw new NoSuchElementException();
+            return str;
+            // трудоёмкост : O(1)
+            // ресурсоёмкост : O(n) n - количество елементов в list
         }
 
         @Override
         public void remove() {
+            if (location == 0) throw new IllegalStateException();
+            count++;
+            if (count >= 2)
+                throw new IllegalStateException();
+            else {
 
+                Trie.this.remove(listNode.get(location - 1));
+                listNode.remove(listNode.get(location - 1));
+                location--;
+            }
         }
+        // трудоёмкост : O(log(n)) в средним случае, O(n) в худшем случае n- количество узлов дерева
+        // ресурсоёмкост : O(1)
     }
 }

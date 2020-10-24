@@ -26,51 +26,51 @@ abstract class AbstractTrieTest {
 
     protected fun doGeneralTest() {
         val random = Random()
-        for (iteration in 1..100) {
-            val trie = create()
-            assertEquals(0, trie.size)
-            assertFalse("some" in trie)
-            var wordCounter = 0
-            val wordList = mutableSetOf<String>()
-            val removeIndex = random.nextInt(15) + 1
-            var toRemove = ""
-            for (i in 1..15) {
-                val string = random.nextString("abcdefgh", 1, 15)
-                wordList += string
-                if (i == removeIndex) {
-                    toRemove = string
-                }
-                if (trie.add(string)) {
-                    wordCounter++
-                }
+//        for (iteration in 1..100) {
+        val trie = create()
+        assertEquals(0, trie.size)
+        assertFalse("some" in trie)
+        var wordCounter = 0
+        val wordList = mutableSetOf<String>()
+        val removeIndex = random.nextInt(15) + 1
+        var toRemove = ""
+        for (i in 1..15) {
+            val string = random.nextString("abcdefgh", 1, 15)
+            wordList += string
+            if (i == removeIndex) {
+                toRemove = string
+            }
+            if (trie.add(string)) {
+                wordCounter++
+            }
+            if (string !in trie) println("test")
 
-                if (string !in trie) println("test")
-
-                assertTrue(
-                    string in trie,
-                    "An element wasn't added to trie when it should've been."
-                )
-                if (string.length != 1) {
-                    val substring = string.substring(0, random.nextInt(string.length - 1))
-                    if (substring !in wordList) {
-                        assertTrue(
-                            substring !in trie,
-                            "An element is considered to be in trie when it should not be there."
-                        )
-                    }
+            assertTrue(
+                string in trie,
+                "An element wasn't added to trie when it should've been."
+            )
+            if (string.length != 1) {
+                val substring = string.substring(0, random.nextInt(string.length - 1))
+                if (substring !in wordList) {
+                    assertTrue(
+                        substring !in trie,
+                        "An element is considered to be in trie when it should not be there."
+                    )
                 }
             }
-            assertEquals(wordCounter, trie.size)
-            trie.remove(toRemove)
-            assertEquals(wordCounter - 1, trie.size)
-            assertFalse(
-                toRemove in trie,
-                "A supposedly removed element is still considered to be in trie."
-            )
-            trie.clear()
-            assertEquals(0, trie.size)
-            assertFalse("some" in trie)
         }
+
+        assertEquals(wordCounter, trie.size)
+        trie.remove(toRemove)
+        assertEquals(wordCounter - 1, trie.size)
+        assertFalse(
+            toRemove in trie,
+            "A supposedly removed element is still considered to be in trie."
+        )
+        trie.clear()
+        assertEquals(0, trie.size)
+        assertFalse("some" in trie)
+
     }
 
     protected fun doIteratorTest() {
@@ -115,6 +115,36 @@ abstract class AbstractTrieTest {
             }
             println("All clear!")
         }
+    }
+
+    protected fun myIteratorTes() {
+
+        implementationTest { create().iterator().hasNext() }
+        implementationTest { create().iterator().next() }
+        val trieSet = create()
+        val controlSet = mutableSetOf<String>()
+        controlSet.add("Pham")
+        controlSet.add("ba")
+        controlSet.add("nam")
+        controlSet.add("bac")
+        controlSet.add("suong")
+        for (i in controlSet) {
+            trieSet += i
+        }
+        val iterator1 = trieSet.iterator()
+        var count = 0
+        while (iterator1.hasNext()) {
+            iterator1.next()
+            count++
+        }
+        assertEquals(count, controlSet.size)
+        val iterator = trieSet.iterator()
+        val controlList = controlSet.toList()
+        while (iterator.hasNext()) {
+            val str = iterator.next()
+            assertTrue(controlList.contains(str))
+        }
+
     }
 
     protected fun doIteratorRemoveTest() {
@@ -176,6 +206,25 @@ abstract class AbstractTrieTest {
             }
             println("All clear!")
         }
+    }
+
+    protected fun myIteratorRemoveTest() {
+        implementationTest { create().iterator().hasNext() }
+        implementationTest { create().iterator().next() }
+        val trieSet = create()
+        val controlSet = mutableSetOf<String>()
+        controlSet.add("Pham")
+        controlSet.add("ba")
+        controlSet.add("nam")
+        controlSet.add("bac")
+        controlSet.add("suong")
+        for (i in controlSet) {
+            trieSet += i
+        }
+        val iterator1 = trieSet.iterator()
+        iterator1.next()
+        iterator1.remove()
+        assertEquals(trieSet.size, 4)
     }
 
 }

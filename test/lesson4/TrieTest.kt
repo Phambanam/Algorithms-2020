@@ -18,12 +18,14 @@ class TrieTest : AbstractTrieTest() {
     @Tag("7")
     fun iteratorTestJava() {
         doIteratorTest()
+        myIteratorTes()
     }
 
     @Test
     @Tag("8")
     fun iteratorRemoveTestJava() {
         doIteratorRemoveTest()
+        myIteratorRemoveTest()
     }
 
 }
