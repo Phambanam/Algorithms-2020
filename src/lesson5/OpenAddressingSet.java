@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class OpenAddressingSet<T> extends AbstractSet<T> {
-
+    final Object PHAMNAM =  (new Object());
     private final int bits;
 
     private final int capacity;
@@ -40,6 +40,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean contains(Object o) {
+        if(o == PHAMNAM) return false;
         int index = startingIndex(o);
         Object current = storage[index];
         while (current != null) {
@@ -93,9 +94,30 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      *
      * Средняя
      */
+    private int cout = 0;
     @Override
     public boolean remove(Object o) {
-        return super.remove(o);
+        cout++;
+        System.out.println("cout" + cout);
+        if(!contains(o)) {
+            System.out.println("don't find");
+            return false;
+        }
+        int index = startingIndex(o);
+        Object current = storage[index];
+        while (current != null) {
+            if (current.equals(o)) {
+                System.out.println("found");
+                break;
+            }
+            index = (index + 1) % capacity;
+            current = storage[index];
+        }
+        System.out.println(index);
+         storage[index] = null;
+        size--;
+        return true;
+
     }
 
     /**
@@ -115,3 +137,4 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         throw new NotImplementedError();
     }
 }
+
