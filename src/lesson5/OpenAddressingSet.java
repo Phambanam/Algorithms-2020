@@ -1,23 +1,32 @@
 package lesson5;
 
-import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
 public class OpenAddressingSet<T> extends AbstractSet<T> {
-    final Object PHAMNAM =  (new Object());
+    public T DD (){
+        return (T) Integer.valueOf(-1);
+    }
+
     private final int bits;
 
     private final int capacity;
 
+
     private final Object[] storage;
+
+    public Object[] getStorage() {
+        return storage;
+    }
 
     private int size = 0;
 
-    private int startingIndex(Object element) {
+    public int startingIndex(Object element) {
+
         return element.hashCode() & (0x7FFFFFFF >> (31 - bits));
     }
 
@@ -40,10 +49,9 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean contains(Object o) {
-        if(o == PHAMNAM) return false;
         int index = startingIndex(o);
         Object current = storage[index];
-        while (current != null) {
+        while (current == DD() || current != null) {
             if (current.equals(o)) {
                 return true;
             }
@@ -68,8 +76,9 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         int startingIndex = startingIndex(t);
         int index = startingIndex;
         Object current = storage[index];
-        while (current != null) {
+        while (current != DD() && current != null) {
             if (current.equals(t)) {
+
                 return false;
             }
             index = (index + 1) % capacity;
@@ -94,27 +103,23 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      *
      * Средняя
      */
-    private int cout = 0;
+
     @Override
     public boolean remove(Object o) {
-        cout++;
-        System.out.println("cout" + cout);
         if(!contains(o)) {
-            System.out.println("don't find");
             return false;
         }
         int index = startingIndex(o);
         Object current = storage[index];
-        while (current != null) {
+        while (current != DD() && current != null) {
             if (current.equals(o)) {
-                System.out.println("found");
                 break;
             }
             index = (index + 1) % capacity;
             current = storage[index];
         }
-        System.out.println(index);
-         storage[index] = null;
+
+        storage[index] = DD();
         size--;
         return true;
 
@@ -134,7 +139,41 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
     @Override
     public Iterator<T> iterator() {
         // TODO
-        throw new NotImplementedError();
+        return new myIterator();
+    }
+    public class myIterator implements Iterator<T>{
+        private ArrayList<T> list ;
+        private  T element;
+
+        private int location = 0;
+        public myIterator(){
+            list= new ArrayList<>();
+            for(Object o : getStorage()){
+                if(o != null && o != DD()){
+                    list.add((T)o);
+                }
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return location < list.size() ;
+        }
+
+        @Override
+        public T next() {
+            if (location == list.size()) throw new IllegalStateException();
+            element = list.get(location++);
+            return element;
+        }
+
+        @Override
+        public void remove() {
+            if (location == 0) throw new IllegalStateException();
+            OpenAddressingSet.this.remove(list.get(location - 1));
+            list.remove(list.get(location - 1));
+            location--;
+        }
     }
 }
 
