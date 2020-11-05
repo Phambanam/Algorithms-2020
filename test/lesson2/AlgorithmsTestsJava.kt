@@ -29,5 +29,6 @@ class AlgorithmsTestsJava : AbstractAlgorithmsTests() {
     @Tag("3")
     fun testCalcPrimesNumberJava() {
         calcPrimesNumber { JavaAlgorithms.calcPrimesNumber(it) }
+        myCalcPrimesNumber { JavaAlgorithms.calcPrimesNumber(it) }
     }
 }

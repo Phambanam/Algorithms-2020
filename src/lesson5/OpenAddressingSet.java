@@ -1,16 +1,13 @@
 package lesson5;
 
+import lesson3.BinarySearchTree;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractSet;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class OpenAddressingSet<T> extends AbstractSet<T> {
-    public T DD (){
-        return (T) Integer.valueOf(-1);
-    }
+    private T t = (T) "PHAMNAM";
+    List<T> elementData = new ArrayList<>();
 
     private final int bits;
 
@@ -38,7 +35,9 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         capacity = 1 << bits;
         storage = new Object[capacity];
     }
-
+    public T DD (){
+        return t;
+    }
     @Override
     public int size() {
         return size;
@@ -89,6 +88,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         }
         storage[index] = t;
         size++;
+        elementData.add(t);
         return true;
     }
 
@@ -142,37 +142,32 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         return new myIterator();
     }
     public class myIterator implements Iterator<T>{
-        private ArrayList<T> list ;
-        private  T element;
-
         private int location = 0;
-        public myIterator(){
-            list= new ArrayList<>();
-            for(Object o : getStorage()){
-                if(o != null && o != DD()){
-                    list.add((T)o);
-                }
-            }
-        }
+        int  lastRet = -1;
+
 
         @Override
         public boolean hasNext() {
-            return location < list.size() ;
+            return location != size ;
         }
 
         @Override
         public T next() {
-            if (location == list.size()) throw new IllegalStateException();
-            element = list.get(location++);
-            return element;
+            int i = location;
+            if(i >= size) throw new IllegalStateException();
+            List<T> elementData = OpenAddressingSet.this.elementData;
+            location = i + 1;
+            return (T) elementData.get(lastRet = i );
         }
 
         @Override
         public void remove() {
-            if (location == 0) throw new IllegalStateException();
-            OpenAddressingSet.this.remove(list.get(location - 1));
-            list.remove(list.get(location - 1));
-            location--;
+            if (lastRet < 0)
+                throw new IllegalStateException();
+            OpenAddressingSet.this.remove(elementData.get(lastRet ));
+            elementData.remove(lastRet );
+            location = lastRet;
+            lastRet = -1;
         }
     }
 }

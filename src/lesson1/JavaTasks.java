@@ -44,49 +44,50 @@ public class JavaTasks {
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public void sortTimes(String inputName, String outputName) throws Exception {
-
         FileReader fr = new FileReader(new File(inputName));
         FileWriter fw = new FileWriter(new File(outputName));
         BufferedReader br = new BufferedReader(fr);
-        String line;
-        String test = "12:41:30 AM";
-        String sample = "(([01]\\d)|(2[0-4])):[0-5]\\d:[0-5]\\d\\s((PM)|(AM))";
-        List<Integer> lTime = new ArrayList<>();
-        while ((line = br.readLine()) != null) {
-            int timeIn =
-                    Integer.parseInt(line.substring(3, 5)) * 60 +
-                            Integer.parseInt(line.substring(6, 8));
-            if (!line.matches(sample)) throw new Exception(" loi ");
-            if (!line.startsWith("12")) {
-                timeIn += Integer.parseInt(line.substring(0, 2)) * 3600;
-            }
-            if (!line.startsWith("AM", 9)) {
-                timeIn += 24 * 3600;
-            }
-            lTime.add(timeIn);
-        }
-        int[] listT = lTime.stream().mapToInt(Integer::intValue).toArray();
-        Sorts.quickSort(listT);
-        for (int e : listT) {
-            {
-                if (e < 3600) {
-                    fw.write(String.format("%02d:%02d:%02d", 12, (e % 3600) / 60, e % 60) + " AM\n");
-                }
-            }
-            if (e > 3600 && e < 24 * 3600)
-                fw.write(String.format("%02d:%02d:%02d", e / 3600, (e % 3600) / 60, e % 60) + " AM\n");
-            if (e > 24 * 3600) {
-                e -= 24 * 3600;
-                if (e < 3600) {
-                    e += 12 * 3600;
-                }
-                fw.write(String.format("%02d:%02d:%02d", e / 3600, (e % 3600) / 60, e % 60) + " PM\n");
-            }
-        }
+      try {
+          String line;
+          String sample = "(([01]\\d)|(2[0-4])):[0-5]\\d:[0-5]\\d\\s((PM)|(AM))";
+          List<Integer> lTime = new ArrayList<>();
+          while ((line = br.readLine()) != null) {
+              int timeIn =
+                      Integer.parseInt(line.substring(3, 5)) * 60 +
+                              Integer.parseInt(line.substring(6, 8));
+              if (!line.matches(sample)) throw new Exception(" loi ");
+              if (!line.startsWith("12")) {
+                  timeIn += Integer.parseInt(line.substring(0, 2)) * 3600;
+              }
+              if (!line.startsWith("AM", 9)) {
+                  timeIn += 24 * 3600;
+              }
+              lTime.add(timeIn);
+          }
+          int[] listT = lTime.stream().mapToInt(Integer::intValue).toArray();
+          Sorts.quickSort(listT);
+          for (int e : listT) {
+              {
+                  if (e < 3600) {
+                      fw.write(String.format("%02d:%02d:%02d", 12, (e % 3600) / 60, e % 60) + " AM\n");
+                  }
+              }
+              if (e > 3600 && e < 24 * 3600)
+                  fw.write(String.format("%02d:%02d:%02d", e / 3600, (e % 3600) / 60, e % 60) + " AM\n");
+              if (e > 24 * 3600) {
+                  e -= 24 * 3600;
+                  if (e < 3600) {
+                      e += 12 * 3600;
+                  }
+                  fw.write(String.format("%02d:%02d:%02d", e / 3600, (e % 3600) / 60, e % 60) + " PM\n");
+              }
+          }
+      }finally {
+          fr.close();
+          fw.close();
+          br.close();
+      }
 
-        fr.close();
-        fw.close();
-        br.close();
         //=>Трудоемкость алгоритма T = O(nlog(n)) n размер listT
         // R = O(n)
     }
@@ -131,9 +132,9 @@ public class JavaTasks {
                 addressNames.putIfAbsent(l, lStr);
                 addressNames.get(l).add(line.substring(0, line.length() - 3 - l.length()));
             }
-        }
+        } // T1 = O(n) n = размер addressNames
         for (List<String> e : addressNames.values()) {
-            Collections.sort(e);
+            Collections.sort(e); // T2 = O(n) = размер addressNames
         }
         Map<String, List<Integer>> map = new HashMap<>();
         for (String e : addressNames.keySet()) {
@@ -142,20 +143,20 @@ public class JavaTasks {
             List<Integer> lStr = new ArrayList<>();
             map.putIfAbsent(str, lStr);
             map.get(str).add(i);
-        }
+        }// T3 = O(n) n = размер addressNames
         List<String> lConvert = new ArrayList<>(map.keySet());
         Collections.sort(lConvert);
         for (List<Integer> e : map.values()) {
             Collections.sort(e);
         }
-        for (String e : lConvert) {
-            for (Integer i : map.get(e)) {
+        for (String e : lConvert) { // N
+            for (Integer i : map.get(e)) {//N
                 printWriter.println(e + " " + i + " - " + String.join(", ", addressNames.get(e + " " + i)));
             }
-        }//O(n)
+        }//T4 =O(N^2)
         printWriter.close();
-        // => T = O(n^2) n = размер map
-        // R = O(n)
+        // => T =T1+T2+T3+T4 = 3*O(N) + O(N^2) = O(N^2)  N = размер map
+        // R = O(2N)
     }
 
 
@@ -199,14 +200,14 @@ public class JavaTasks {
             int a =(int) (Double.parseDouble(tem) * 10) + 2730;
             positiveList.add(a);
             tem = br.readLine();
-        }
+        } // T1 = O(n) n= количество линий в файл
         int[] arrayPositive = positiveList.stream().mapToInt(i -> i).toArray();
-        arrayPositive = Sorts.countingSort(arrayPositive,7730);//O(n/2)
-        for (int e : arrayPositive) fw.write((double)( e -2730)/ 10 + "\n");//O(n/2)
+        arrayPositive = Sorts.countingSort(arrayPositive,7730);//T2 = O(n) т = 7730
+        for (int e : arrayPositive) fw.write((double)( e -2730)/ 10 + "\n");//T3 = O(n) n = x размер arrayPositive
         fw.close();
         br.close();
-        //=> T= O(n)n = max( 7730, PositiveInt.size)
-        // R = O(n)
+        //=> T = T1+T2+T3 = O(n) n = max( 7730, PositiveInt.size)
+        // R = O(n) n = max( 7730, PositiveInt.size)
     }
 
     /**
@@ -242,13 +243,14 @@ public class JavaTasks {
 
         BufferedReader br = new BufferedReader(new FileReader(new File(inputName)));
         FileWriter fw = new FileWriter(new File(outputName));
+       try{
         List<Integer> sequence = new ArrayList<>();
         String line;
         while ((line = br.readLine()) != null) {
             sequence.add(Integer.parseInt(line));
-        }
+        }// T1 = O(n) n = sequence.size
         int[] arrSequence = sequence.stream().mapToInt(i -> i).toArray();
-        Sorts.quickSort(arrSequence);
+        Sorts.quickSort(arrSequence);// Лучше T2 = O(nlogn) хуже T2 =O(n^2)
         int maxCount = 1;
         int minValue = arrSequence[0];
         int countValue = 1;
@@ -262,17 +264,21 @@ public class JavaTasks {
                 countValue = 0;
             }
             countValue++;
-        }
+        } // T3 = O(n)
         for (int e : sequence) {
             if (e != minValue) fw.write(e + "\n");
-        }
+        } // T4 = O(n)
         while (maxCount > 0) {
             fw.write(minValue + "\n");
             maxCount--;
-        }
-        fw.close();
-        br.close();
-        // => T = O(n^2) n = arrSequence.length;
+        } //T5 = maxCount
+       }finally {
+           fw.close();
+           br.close();
+       }
+
+        // =>Лучше  T = T1+T2+T3+t4+T5 = O(nlogn) n = arrSequence.length;
+        // Xyже  T = T1+T2+T3+t4+T5 = O(n^2) n = arrSequence.length;
         // R = O(n)
     }
 

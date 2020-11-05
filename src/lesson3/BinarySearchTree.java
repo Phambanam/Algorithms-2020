@@ -1,5 +1,6 @@
 package lesson3;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
             this.value = value;
         }
     }
-
+    List<T> elementData = new ArrayList<>();
     private Node<T> root = null;
 
     private int size = 0;
@@ -80,6 +81,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
             assert closest.right == null;
             closest.right = newNode;
         }
+        elementData.add(t);
         size++;
         return true;
     }
@@ -168,25 +170,9 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
     public class BinarySearchTreeIterator implements Iterator<T> {
         private int location = 0;
-        private Node<T> node = null;
-        private List<Node<T>> listNode;
-        private int count = 0;
+        int  lastRet = -1;
 
-        private BinarySearchTreeIterator() {
-            listNode = new ArrayList<>();
-            addNode(root);
-        }
-
-        public void addNode(Node<T> node) {
-            if (node != null) {
-                addNode(node.left);
-                listNode.add(node);
-                addNode(node.right);
-            }
-        }
-
-
-        /**
+       /**
          * Проверка наличия следующего элемента
          * <p>
          * Функция возвращает true, если итерация по множеству ещё не окончена (то есть, если вызов next() вернёт
@@ -198,9 +184,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          */
         @Override
         public boolean hasNext() {
-
-            return location < listNode.size();
-
+            return location != size;
         }
 
         /**
@@ -218,10 +202,11 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          */
         @Override
         public T next() {
-            if (location == listNode.size()) throw new IllegalStateException();
-            node = listNode.get(location++);
-            if (node == null) throw new NoSuchElementException();
-            return node.value;
+            int i = location;
+            if(i >= size) throw new IllegalStateException();
+            List<T> elementData = BinarySearchTree.this.elementData;
+            location = i + 1;
+            return elementData.get(lastRet = i );
             // трудоёмкост : O(1)
             // ресурсоёмкост : O(n) n - количество елементов в list
         }
@@ -240,19 +225,13 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          */
         @Override
         public void remove() {
-            if (location == 0) throw new IllegalStateException();
-            count++;
-
-            if (count >= 2)
+            if (lastRet < 0)
                 throw new IllegalStateException();
-            else {
-                BinarySearchTree.this.remove(listNode.get(location - 1).value);
-                listNode.remove(location - 1);
-                location--;
-            }
+            BinarySearchTree.this.remove(elementData.get(lastRet ));
+            elementData.remove(lastRet );
+            location = lastRet;
+            lastRet = -1;
         }
-        // трудоёмкост : O(log(n)) в средним случае, O(n) в худшем случае n- количество узлов дерева
-        // ресурсоёмкост : O(1)
     }
 
     /**
@@ -431,6 +410,7 @@ final class mySortedSet<T extends Comparable<T>> extends AbstractSet<T> implemen
         return myCompare(o) && m.contains(o);
     }
 
+    @Nullable
     @Override
     public Iterator<T> iterator() {
         return null;

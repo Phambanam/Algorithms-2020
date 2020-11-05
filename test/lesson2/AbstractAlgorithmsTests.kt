@@ -161,4 +161,11 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(348513, calcPrimesNumber(5000000))
         assertEquals(664579, calcPrimesNumber(10000000))
     }
+
+    fun myCalcPrimesNumber(calcPrimesNumber: (Int) -> Int){
+        assertEquals(915667, calcPrimesNumber(14091999))
+        assertEquals(0, calcPrimesNumber(-1))
+        assertEquals(0, calcPrimesNumber(0))
+
+    }
 }

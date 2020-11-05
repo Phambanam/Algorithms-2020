@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,27 +40,35 @@ public class JavaAlgorithms {
     static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(new File(inputName)));
         List<Integer> list = new ArrayList<>();
-        String str = br.readLine();
-        while (str != null) {
-            list.add(Integer.parseInt(str));
-            str = br.readLine();
-        }
-        Pair<Integer, Integer> res = null;
         int max = 0;
-        for (int i = 0; i < list.size(); i++) {
-            if (i != 0 && list.get(i) > list.get(i - 1)) {
-                continue;
-            }
-            for (int j = i + 1; j < list.size(); j++) {
-                if (list.get(j) - list.get(i) > max) {
-                    max = list.get(j) - list.get(i);
-                    res = new Pair<>(i, j);
-                }
-            }
-        }
-        assert res != null;
-        return new Pair<>(res.component1() + 1, res.component2() + 1);
-        // T =O(n^2) n размер list
+        int startIndex = 0;
+        int endIndex = 0;
+        int endValue = 0;
+        String str = br.readLine();
+        while (str != null) {//n
+            list.add(Integer.parseInt(str));//n
+            str = br.readLine();//n
+        }// T1 = O(n)
+        int[] arr = new int[list.size()];
+        arr[0] = list.get(0);
+        for(int i = 1;i < list.size();i++){
+            arr[i] = Math.min(arr[i-1],list.get(i));//n-1
+        }//T2 =O(n)
+        for(int i = 1;i < list.size();i++){
+         if(max < list.get(i) - arr[i-1]){
+          max = list.get(i) - arr[i-1];
+          startIndex = i;
+          endValue = arr[i-1];
+         }
+        }//  T3 = O(n)
+         for (int i = 0 ; i < list.size(); i++){
+            if(list.get(i) == endValue){
+             endIndex = i;
+             break;
+            } //T4 =O(n)
+         }
+        return new Pair<>( endIndex + 1,startIndex +1);
+        // T = T1+T2+T3+t4 = O(n) n размер list
         //R = O(n)
     }
 
@@ -167,21 +176,24 @@ public class JavaAlgorithms {
      * Единица простым числом не считается.
      */
     static public int calcPrimesNumber(int limit) {
-        if (limit <= 1) return 0;
-        int count = 0;
+        if (limit <= 1) return 0;//1
+        int count = 0;//1
         int[] list = new int[limit+1];
-        list[0]=0;
-        list[1]=0;
-        for(int i = 2; i <= limit; i++) list[i] = 1;
-        for(int i = 2; i <= (int) Math.sqrt(limit); i++){
+        list[0]=0;//1
+        list[1]=0;//1
+        for(int i = 2; i <= limit; i++) list[i] = 1;//n-1
+        for(int i = 2; i <= (int) Math.sqrt(limit); i++){ // sqrt(n)
             if(list[i] == 1)
-                for(int j = 2; j <= limit /i; j++ ) list[i*j]=0;
+                for(int j = 2; j <= limit /i; j++ ) {
+                    list[i*j]=0; // n*(1/2 + 1/3 +...+1/sqrt(n)) = n*log(sqrt(n))
+                }
         }
         for (int e : list){
-            if(e ==1) count++;
+            if(e ==1) count++; // n
         }
         return count;
     }
-    // T = O(nLogn) n= limit
+    // T = sqrt(n) + n-1 + n*log(sqrt(n)) =  O(nLogn) n= limit
     // R = O(n + 1 )
+    //  Источник : Sieve of Eratosthenes https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
 }
