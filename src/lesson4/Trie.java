@@ -1,5 +1,6 @@
 package lesson4;
 
+import lesson3.BinarySearchTree;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,10 +17,10 @@ public class Trie extends AbstractSet<String> implements Set<String> {
         boolean isLeaf = false;
     }
 
-    public Node root = new Node();
+    private Node root = new Node();
 
     private int size = 0;
-
+    List<String> elementData = new ArrayList<>();
     @Override
     public int size() {
         return size;
@@ -71,6 +72,7 @@ public class Trie extends AbstractSet<String> implements Set<String> {
         if (modified) {
             size++;
         }
+        elementData.add(element);
         current.isLeaf = true;
         return modified;
     }
@@ -103,55 +105,32 @@ public class Trie extends AbstractSet<String> implements Set<String> {
 
     public class TreeIterator implements Iterator {
         private int location = 0;
-        private List<String> listNode;
-        private String str = "";
-        private int count = 0;
-
-        public TreeIterator() {
-            listNode = new ArrayList<>();
-            addString(root, 0, new StringBuilder());
-        }
-
-        public void addString(Node node, int level, StringBuilder sequence) {
-            Map<Character, Node> chil = node.children;
-            Object[] cha = chil.keySet().toArray();
-            for (Object character : cha) {
-                if ((char) character == (char) 0)
-                    listNode.add(sequence.toString());
-                sequence = sequence.insert(level, character);
-                addString(chil.get( character), level + 1, sequence);
-                sequence.deleteCharAt(level);
-            }
-        }
+        int  lastRet = -1;
 
         @Override
         public boolean hasNext() {
-            return location < listNode.size();
+            return location != size;
         }
 
         @Override
         public Object next() {
-            if (location == listNode.size()) throw new IllegalStateException();
-            str = listNode.get(location++);
-            if (str.equals("")) throw new NoSuchElementException();
-            return str;
-            // трудоёмкост : O(1)
-            // ресурсоёмкост : O(n) n - количество елементов в list
+            int i = location;
+            if(i >= size) throw new IllegalStateException();
+            List<String> elementData = Trie.this.elementData;
+            location = i + 1;
+            return elementData.get(lastRet = i );
         }
 
         @Override
         public void remove() {
-            if (location == 0) throw new IllegalStateException();
-            count++;
-            if (count >= 2)
+            if (lastRet < 0)
                 throw new IllegalStateException();
-            else {
-
-                Trie.this.remove(listNode.get(location - 1));
-                listNode.remove(listNode.get(location - 1));
-                location--;
-            }
+           Trie.this.remove(elementData.get(lastRet ));
+            elementData.remove(lastRet );
+            location = lastRet;
+            lastRet = -1;
         }
+
         // трудоёмкост : O(log(n)) в средним случае, O(n) в худшем случае n- количество узлов дерева
         // ресурсоёмкост : O(1)
     }
