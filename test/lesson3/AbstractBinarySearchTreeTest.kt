@@ -156,6 +156,8 @@ abstract class AbstractBinarySearchTreeTest {
                 expectedSize, binarySet.size,
                 "The size of the tree is incorrect: was ${binarySet.size}, should've been $expectedSize."
             )
+            println("binary set: $binarySet")
+            println("toremove : $toRemove")
             for (element in controlSet) {
                 assertTrue(
                     binarySet.contains(element),

@@ -1,6 +1,6 @@
 package lesson3;
 
-import org.jetbrains.annotations.Contract;
+import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +18,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
             this.value = value;
         }
     }
+
     List<T> elementData = new ArrayList<>();
     private Node<T> root = null;
 
@@ -97,63 +98,43 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      * <p>
      * Средняя
      */
+    Boolean check = true;
+
     @Override
     public boolean remove(Object o) {
-        if (!contains(o)) {
-            System.out.println("don't find");
-            return false;
-        }
-        @SuppressWarnings("unchecked")
-        T t = (T) o;
-
-        Node<T> node = root;
-        Node<T> nodeParent = null;
-        boolean left = false;
-
-        while (node.value.compareTo(t) != 0) {
-            nodeParent = node;
-            if (node.value.compareTo(t) < 0) {
-                left = false;
-                node = node.right;
-            } else {
-                left = true;
-                node = node.left;
-            }
-        }
-        if (node.left == null) {
-            if (node == root) root = node.right;
-            else if (left) nodeParent.left = node.right;
-            else nodeParent.right = node.right;
-        } else if (node.right == null) {
-            if (node == root) root = node.left;
-            else if (left) nodeParent.left = node.left;
-            else nodeParent.right = node.left;
-        } else {
-            Node<T> maxNode = node.left;
-            Node<T> perNode = node;
-
-            while (maxNode.right != null) {
-                perNode = maxNode;
-                maxNode = maxNode.right;
-            }
-            if (maxNode != node.left) {
-                perNode.right = maxNode.left;
-                maxNode.left = node.left;
-            }
-            maxNode.right = node.right;
-            if (node == root) {
-                root = maxNode;
-            } else if (left) {
-                nodeParent.left = maxNode;
-            } else {
-                nodeParent.right = maxNode;
-            }
-        }
-
+        root = delete(root, o);
+        if (!check) return false;
         size--;
         return true;
         // трудоёмкост : O(log(n)) в средним случае, O(n) в худшем случае n- количество узлов дерева
         // ресурсоёмкост : O(1)
+    }
+
+    private Node<T> delete(Node<T> node, Object o) {
+        if (node == null) {
+            check = false;
+            return node;
+        }
+        if (node.value.compareTo((T) o) == 0) {
+            if (node.left == null) {
+                return node.right;
+            }
+            Node<T> maxNode = node.left;
+
+            while (maxNode.right != null) {
+                maxNode = maxNode.right;
+            }
+            Node<T> nNew = new Node<>(maxNode.value);
+            nNew.right = node.right;
+            nNew.left = delete(node.left, maxNode.value);
+            return nNew;
+        }
+        if (node.value.compareTo((T) o) < 0) {
+            node.right = delete(node.right, o);
+        } else {
+            node.left = delete(node.left, o);
+        }
+        return node;
     }
 
     @Nullable
@@ -170,9 +151,9 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
     public class BinarySearchTreeIterator implements Iterator<T> {
         private int location = 0;
-        int  lastRet = -1;
+        int lastRet = -1;
 
-       /**
+        /**
          * Проверка наличия следующего элемента
          * <p>
          * Функция возвращает true, если итерация по множеству ещё не окончена (то есть, если вызов next() вернёт
@@ -203,10 +184,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         @Override
         public T next() {
             int i = location;
-            if(i >= size) throw new IllegalStateException();
+            if (i >= size) throw new IllegalStateException();
             List<T> elementData = BinarySearchTree.this.elementData;
             location = i + 1;
-            return elementData.get(lastRet = i );
+            return elementData.get(lastRet = i);
             // трудоёмкост : O(1)
             // ресурсоёмкост : O(n) n - количество елементов в list
         }
@@ -227,8 +208,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         public void remove() {
             if (lastRet < 0)
                 throw new IllegalStateException();
-            BinarySearchTree.this.remove(elementData.get(lastRet ));
-            elementData.remove(lastRet );
+            BinarySearchTree.this.remove(elementData.get(lastRet));
+            elementData.remove(lastRet);
             location = lastRet;
             lastRet = -1;
         }
@@ -428,7 +409,6 @@ final class mySortedSet<T extends Comparable<T>> extends AbstractSet<T> implemen
     }
 
 
-
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
@@ -451,44 +431,51 @@ final class mySortedSet<T extends Comparable<T>> extends AbstractSet<T> implemen
 
     @Override
     public T first() {
-        if (size() == 0) throw new NoSuchElementException();
-        if (eStart == null) {
-            return m.first();
-        } else if (toEnd) {
-            return eStart;
-        } else
-            {
-            Iterator<T> bIterator = m.iterator();
-            T current = null;
-            while (bIterator.hasNext()) {
-                current = bIterator.next();
-                if (current.compareTo(eStart) >= 0) {
-                    break;
-                }
-            }
-            return current;
-        }
+        //TODO
+        throw new NotImplementedError();
     }
+//        if (size() == 0) throw new NoSuchElementException();
+//        if (eStart == null) {
+//            return m.first();
+//        } else if (toEnd) {
+//            return eStart;
+//        } else
+//            {
+//            Iterator<T> bIterator = m.iterator();
+//            T current = null;
+//            while (bIterator.hasNext()) {
+//                current = bIterator.next();
+//                if (current.compareTo(eStart) >= 0) {
+//                    break;
+//                }
+//            }
+//            return current;
+//        }
+
+    //  }
 
     @Override
     public T last() {
-        if (size() == 0) throw new NoSuchElementException();
-        if (eEnd == null) {
-            return m.last();
-        } else {
-            Iterator<T> bIterator = m.iterator();
-            T current;
-            T sCurrent = null;
-            while (bIterator.hasNext()) {
-                current = bIterator.next();
-                if (current.compareTo(eEnd) >= 0) {
-                    break;
-                }
-                sCurrent = current;
-            }
-            return sCurrent;
-        }
+        //TODO
+        throw new NotImplementedError();
     }
+//        if (size() == 0) throw new NoSuchElementException();
+//        if (eEnd == null) {
+//            return m.last();
+//        } else {
+//            Iterator<T> bIterator = m.iterator();
+//            T current;
+//            T sCurrent = null;
+//            while (bIterator.hasNext()) {
+//                current = bIterator.next();
+//                if (current.compareTo(eEnd) >= 0) {
+//                    break;
+//                }
+//                sCurrent = current;
+//            }
+//            return sCurrent;
+//        }
+//    }
 
 
     @Override
