@@ -1,15 +1,12 @@
 package lesson2;
 
-import kotlin.NotImplementedError;
 import kotlin.Pair;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class JavaAlgorithms {
@@ -39,36 +36,35 @@ public class JavaAlgorithms {
      */
     static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(new File(inputName)));
-        List<Integer> list = new ArrayList<>();
-        int max = 0;
+        List<Integer> listPrice = new ArrayList<>();
         int startIndex = 0;
         int endIndex = 0;
-        int endValue = 0;
+        int sum = 0;
+        int minPosition = -1;
         String str = br.readLine();
         while (str != null) {//n
-            list.add(Integer.parseInt(str));//n
+            listPrice.add(Integer.parseInt(str));//n
             str = br.readLine();//n
         }// T1 = O(n)
-        int[] arr = new int[list.size()];
-        arr[0] = list.get(0);
-        for(int i = 1;i < list.size();i++){
-            arr[i] = Math.min(arr[i-1],list.get(i));//n-1
+        int[] arrDiff = new int[listPrice.size()];
+        for (int i = 0; i < listPrice.size() - 2; i++) {
+            arrDiff[i] = listPrice.get(i + 1) - listPrice.get(i);
         }//T2 =O(n)
-        for(int i = 1;i < list.size();i++){
-         if(max < list.get(i) - arr[i-1]){
-          max = list.get(i) - arr[i-1];
-          startIndex = i;
-          endValue = arr[i-1];
-         }
-        }//  T3 = O(n)
-         for (int i = 0 ; i < list.size(); i++){
-            if(list.get(i) == endValue){
-             endIndex = i;
-             break;
-            } //T4 =O(n)
-         }
-        return new Pair<>( endIndex + 1,startIndex +1);
-        // T = T1+T2+T3+t4 = O(n) n размер list
+        int max = arrDiff[0];
+        for (int i = 0; i < arrDiff.length; i++) {
+            sum += arrDiff[i];
+            if (sum > max) {
+                max = sum;
+                startIndex = minPosition + 1;
+                endIndex = i;
+            }
+            if (sum < 0) {
+                sum = 0;
+                minPosition = i;
+            }
+        }
+        return new Pair<>(startIndex + 1, endIndex + 2);
+        // T = T1+T2+T3+t4 = O(n) n размер listPrice
         //R = O(n)
     }
 
@@ -123,10 +119,10 @@ public class JavaAlgorithms {
      */
     static public int josephTask(int menNumber, int choiceInterval) {
         int res = 0;
-        for(int i = 2; i <= menNumber; i++){
+        for (int i = 2; i <= menNumber; i++) {
             res = (choiceInterval + res) % i;
         }
-        return res +1;
+        return res + 1;
         //T = O(n) n : menNumber
         // R = O(1)
     }
@@ -147,19 +143,19 @@ public class JavaAlgorithms {
         int location = 0;
         int fLength = firs.length();
         int sLength = second.length();
-        int[][] max = new int [fLength][sLength];
-        for(int i = 0; i < fLength; i++)
-            for(int j = 0; j < sLength; j++ ){
-               if(firs.charAt(i) == second.charAt(j)){
-                   max[i][j] = (i > 0 && j > 0) ? max[i-1][j-1] + 1 : 1;
-                   if(max[i][j] > maxLength){
-                       maxLength = max[i][j];
-                      location = i;
-                   }
-               } else max[i][j] = 0;
+        int[][] max = new int[fLength][sLength];
+        for (int i = 0; i < fLength; i++)
+            for (int j = 0; j < sLength; j++) {
+                if (firs.charAt(i) == second.charAt(j)) {
+                    max[i][j] = (i > 0 && j > 0) ? max[i - 1][j - 1] + 1 : 1;
+                    if (max[i][j] > maxLength) {
+                        maxLength = max[i][j];
+                        location = i;
+                    }
+                } else max[i][j] = 0;
             }
-        if(maxLength ==0 ) return "";
-        else return firs.substring(location - maxLength + 1, location + 1 );
+        if (maxLength == 0) return "";
+        else return firs.substring(location - maxLength + 1, location + 1);
 
         //Трудоемкость алгоритм - O(fLength*sLength)
         // R = O(fLength*sLength)
@@ -178,18 +174,20 @@ public class JavaAlgorithms {
     static public int calcPrimesNumber(int limit) {
         if (limit <= 1) return 0;//1
         int count = 0;//1
-        int[] list = new int[limit+1];
-        list[0]=0;//1
-        list[1]=0;//1
-        for(int i = 2; i <= limit; i++) list[i] = 1;//n-1
-        for(int i = 2; i <= (int) Math.sqrt(limit); i++){ // sqrt(n)
-            if(list[i] == 1)
-                for(int j = 2; j <= limit /i; j++ ) {
-                    list[i*j]=0; // n*(1/2 + 1/3 +...+1/sqrt(n)) = n*log(sqrt(n))
+        int[] list = new int[limit + 1];
+        list[0] = 0;//1
+        list[1] = 0;//1
+        for (int i = 2; i <= limit; i++) list[i] = 1;//n-1
+        for (int i = 2; i <= (int) Math.sqrt(limit); i++) { // sqrt(n)
+            if (list[i] == 1) {
+                for (int j = 2; j <= limit / i; j++) {
+                    list[i * j] = 0;
+                    // n*(1/2 + 1/3 +...+1/sqrt(n)) = n*log(sqrt(n))
                 }
+            }
         }
-        for (int e : list){
-            if(e ==1) count++; // n
+        for (int e : list) {
+            if (e == 1) count++; // n
         }
         return count;
     }
