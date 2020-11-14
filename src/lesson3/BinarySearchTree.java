@@ -151,7 +151,16 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
     public class BinarySearchTreeIterator implements Iterator<T> {
         private int location = 0;
-        int lastRet = -1;
+        private T lastElement  ;
+        private Queue<T> elementData = new LinkedList<>();
+        public BinarySearchTreeIterator(){
+            if(root != null) addQueue(root,elementData);
+        }
+        private void addQueue(Node<T> node, Queue<T> elementData){
+            if(node.left != null) addQueue(node.left,elementData);
+            elementData.add(node.value);
+            if(node.right != null) addQueue(node.right,elementData);
+        }
 
         /**
          * Проверка наличия следующего элемента
@@ -165,7 +174,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          */
         @Override
         public boolean hasNext() {
-            return location != size;
+            return elementData.peek() != null;
         }
 
         /**
@@ -183,13 +192,9 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          */
         @Override
         public T next() {
-            int i = location;
-            if (i >= size) throw new IllegalStateException();
-            List<T> elementData = BinarySearchTree.this.elementData;
-            location = i + 1;
-            return elementData.get(lastRet = i);
-            // трудоёмкост : O(1)
-            // ресурсоёмкост : O(n) n - количество елементов в list
+            if(elementData.peek() == null) throw new IllegalStateException();
+           lastElement = elementData.remove();
+           return  lastElement;
         }
 
         /**
@@ -206,12 +211,9 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          */
         @Override
         public void remove() {
-            if (lastRet < 0)
-                throw new IllegalStateException();
-            BinarySearchTree.this.remove(elementData.get(lastRet));
-            elementData.remove(lastRet);
-            location = lastRet;
-            lastRet = -1;
+            if(lastElement == null) throw new IllegalStateException();
+            if( !BinarySearchTree.this.remove(lastElement)) throw new IllegalStateException();
+
         }
     }
 
@@ -431,51 +433,47 @@ final class mySortedSet<T extends Comparable<T>> extends AbstractSet<T> implemen
 
     @Override
     public T first() {
-        //TODO
-        throw new NotImplementedError();
-    }
-//        if (size() == 0) throw new NoSuchElementException();
-//        if (eStart == null) {
-//            return m.first();
-//        } else if (toEnd) {
-//            return eStart;
-//        } else
-//            {
-//            Iterator<T> bIterator = m.iterator();
-//            T current = null;
-//            while (bIterator.hasNext()) {
-//                current = bIterator.next();
-//                if (current.compareTo(eStart) >= 0) {
-//                    break;
-//                }
-//            }
-//            return current;
-//        }
 
-    //  }
+        if (size() == 0) throw new NoSuchElementException();
+        if (eStart == null) {
+            return m.first();
+        } else if (toEnd) {
+            return eStart;
+        } else
+            {
+            Iterator<T> bIterator = m.iterator();
+            T current = null;
+            while (bIterator.hasNext()) {
+                current = bIterator.next();
+                if (current.compareTo(eStart) >= 0) {
+                    break;
+                }
+            }
+            return current;
+        }
+
+      }
 
     @Override
     public T last() {
-        //TODO
-        throw new NotImplementedError();
+
+        if (size() == 0) throw new NoSuchElementException();
+        if (eEnd == null) {
+            return m.last();
+        } else {
+            Iterator<T> bIterator = m.iterator();
+            T current;
+            T sCurrent = null;
+            while (bIterator.hasNext()) {
+                current = bIterator.next();
+                if (current.compareTo(eEnd) >= 0) {
+                    break;
+                }
+                sCurrent = current;
+            }
+            return sCurrent;
+        }
     }
-//        if (size() == 0) throw new NoSuchElementException();
-//        if (eEnd == null) {
-//            return m.last();
-//        } else {
-//            Iterator<T> bIterator = m.iterator();
-//            T current;
-//            T sCurrent = null;
-//            while (bIterator.hasNext()) {
-//                current = bIterator.next();
-//                if (current.compareTo(eEnd) >= 0) {
-//                    break;
-//                }
-//                sCurrent = current;
-//            }
-//            return sCurrent;
-//        }
-//    }
 
 
     @Override
