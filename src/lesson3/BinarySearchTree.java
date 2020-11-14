@@ -150,7 +150,6 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     }
 
     public class BinarySearchTreeIterator implements Iterator<T> {
-        private int location = 0;
         private T lastElement  ;
         private Queue<T> elementData = new LinkedList<>();
         public BinarySearchTreeIterator(){

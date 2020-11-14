@@ -104,34 +104,39 @@ public class Trie extends AbstractSet<String> implements Set<String> {
     }
 
     public class TreeIterator implements Iterator {
-        private int location = 0;
-        int  lastRet = -1;
-
+        private String lastElement  ;
+        private Queue<String> elementData = new LinkedList<>();
+        public TreeIterator(){
+            addString(root,0,new StringBuilder());
+        }
+        public void addString(Node node, int level, StringBuilder sequence) {
+            Map<Character, Node> chil = node.children;
+            Object[] cha = chil.keySet().toArray();
+            for (Object character : cha) {
+                if ((char) character == (char) 0)
+                    elementData.add(sequence.toString());
+                sequence = sequence.insert(level, character);
+                addString(chil.get( character), level + 1, sequence);
+                sequence.deleteCharAt(level);
+            }
+        }
         @Override
         public boolean hasNext() {
-            return location != size;
+            return elementData.peek() != null;
         }
 
         @Override
         public Object next() {
-            int i = location;
-            if(i >= size) throw new IllegalStateException();
-            List<String> elementData = Trie.this.elementData;
-            location = i + 1;
-            return elementData.get(lastRet = i );
+            if(elementData.peek() == null) throw new IllegalStateException();
+            lastElement = elementData.remove();
+            return  lastElement;
         }
 
         @Override
         public void remove() {
-            if (lastRet < 0)
-                throw new IllegalStateException();
-           Trie.this.remove(elementData.get(lastRet ));
-            elementData.remove(lastRet );
-            location = lastRet;
-            lastRet = -1;
+            if(lastElement == null) throw new IllegalStateException();
+            if( !Trie.this.remove(lastElement)) throw new IllegalStateException();
         }
 
-        // трудоёмкост : O(log(n)) в средним случае, O(n) в худшем случае n- количество узлов дерева
-        // ресурсоёмкост : O(1)
     }
 }
