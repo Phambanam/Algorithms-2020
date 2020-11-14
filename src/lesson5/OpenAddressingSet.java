@@ -1,13 +1,13 @@
 package lesson5;
 
-import lesson3.BinarySearchTree;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.AbstractSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class OpenAddressingSet<T> extends AbstractSet<T> {
-    private T t = (T) "PHAMNAM";
-    List<T> elementData = new ArrayList<>();
+    private Object t = new Object();
 
     private final int bits;
 
@@ -35,9 +35,11 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         capacity = 1 << bits;
         storage = new Object[capacity];
     }
-    public T DD (){
-        return t;
+
+    public T DD() {
+        return (T) t;
     }
+
     @Override
     public int size() {
         return size;
@@ -50,22 +52,23 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
     public boolean contains(Object o) {
         int index = startingIndex(o);
         Object current = storage[index];
-        while (current == DD() || current != null) {
+        while (current != null) {
             if (current.equals(o)) {
                 return true;
             }
             index = (index + 1) % capacity;
             current = storage[index];
+
         }
         return false;
     }
 
     /**
      * Добавление элемента в таблицу.
-     *
+     * <p>
      * Не делает ничего и возвращает false, если такой же элемент уже есть в таблице.
      * В противном случае вставляет элемент в таблицу и возвращает true.
-     *
+     * <p>
      * Бросает исключение (IllegalStateException) в случае переполнения таблицы.
      * Обычно Set не предполагает ограничения на размер и подобных контрактов,
      * но в данном случае это было введено для упрощения кода.
@@ -77,7 +80,6 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         Object current = storage[index];
         while (current != DD() && current != null) {
             if (current.equals(t)) {
-
                 return false;
             }
             index = (index + 1) % capacity;
@@ -88,51 +90,49 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         }
         storage[index] = t;
         size++;
-        elementData.add(t);
         return true;
     }
 
     /**
      * Удаление элемента из таблицы
-     *
+     * <p>
      * Если элемент есть в таблица, функция удаляет его из дерева и возвращает true.
      * В ином случае функция оставляет множество нетронутым и возвращает false.
      * Высота дерева не должна увеличиться в результате удаления.
-     *
+     * <p>
      * Спецификация: {@link Set#remove(Object)} (Ctrl+Click по remove)
-     *
+     * <p>
      * Средняя
      */
 
     @Override
     public boolean remove(Object o) {
-        if(!contains(o)) {
-            return false;
-        }
-        int index = startingIndex(o);
+        int startingIndex = startingIndex(o);
+        int index = startingIndex;
         Object current = storage[index];
-        while (current != DD() && current != null) {
+        while (current != null) {
             if (current.equals(o)) {
-                break;
+                storage[index] = DD();
+                size--;
+                return true;
             }
             index = (index + 1) % capacity;
+            if (startingIndex == index) return false;
             current = storage[index];
         }
 
-        storage[index] = DD();
-        size--;
-        return true;
+        return false;
 
     }
 
     /**
      * Создание итератора для обхода таблицы
-     *
+     * <p>
      * Не забываем, что итератор должен поддерживать функции next(), hasNext(),
      * и опционально функцию remove()
-     *
+     * <p>
      * Спецификация: {@link Iterator} (Ctrl+Click по Iterator)
-     *
+     * <p>
      * Средняя (сложная, если поддержан и remove тоже)
      */
     @NotNull
@@ -141,33 +141,39 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         // TODO
         return new myIterator();
     }
-    public class myIterator implements Iterator<T>{
+
+    public class myIterator implements Iterator<T> {
         private int location = 0;
-        int  lastRet = -1;
+        int index = 0;
+        T lastElement = null;
 
 
         @Override
         public boolean hasNext() {
-            return location != size ;
+            return location < size;
         }
 
         @Override
         public T next() {
             int i = location;
-            if(i >= size) throw new IllegalStateException();
-            List<T> elementData = OpenAddressingSet.this.elementData;
+            if (i >= size) throw new IllegalStateException();
+            while (storage[index] == null || storage[index] == DD()) {
+                index++;
+            }
+            lastElement = (T) storage[index];
+            index++;
             location = i + 1;
-            return (T) elementData.get(lastRet = i );
+            return (T) lastElement;
         }
 
         @Override
         public void remove() {
-            if (lastRet < 0)
+            if (lastElement == null)
                 throw new IllegalStateException();
-            OpenAddressingSet.this.remove(elementData.get(lastRet ));
-            elementData.remove(lastRet );
-            location = lastRet;
-            lastRet = -1;
+            storage[index - 1] = DD();
+            index--;
+            location--;
+            size--;
         }
     }
 }

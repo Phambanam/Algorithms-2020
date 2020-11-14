@@ -1,6 +1,5 @@
 package lesson4;
 
-import lesson3.BinarySearchTree;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
