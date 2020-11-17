@@ -2,6 +2,11 @@
 
 package lesson2
 
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
+import java.util.ArrayList
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -27,7 +32,37 @@ package lesson2
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
 fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
-    TODO()
+    val br = BufferedReader(FileReader(File(inputName)))
+    val listPrice: MutableList<Int> = ArrayList()
+    var startIndex = 0
+    var endIndex = 0
+    var sum = 0
+    var minPosition = -1
+    var str = br.readLine()
+    while (str != null) { //n
+        listPrice.add(str.toInt()) //n
+        str = br.readLine() //n
+    } // T1 = O(n)
+    val arrDiff = IntArray(listPrice.size)
+    for (i in 0 until listPrice.size - 2) {
+        arrDiff[i] = listPrice[i + 1] - listPrice[i]
+    } //T2 =O(n)
+    var max = arrDiff[0]
+    for (i in arrDiff.indices) {
+        sum += arrDiff[i]
+        if (sum > max) {
+            max = sum
+            startIndex = minPosition + 1
+            endIndex = i
+        }
+        if (sum < 0) {
+            sum = 0
+            minPosition = i
+        }
+    }
+    return Pair(startIndex + 1, endIndex + 2)
+    // T = T1+T2+T3+t4 = O(n) n размер listPrice
+    //R = O(n)
 }
 
 /**
@@ -80,7 +115,13 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
  * но приветствуется попытка решить её самостоятельно.
  */
 fun josephTask(menNumber: Int, choiceInterval: Int): Int {
-    TODO()
+    var res = 0
+    for (i in 2..menNumber) {
+        res = (choiceInterval + res) % i
+    }
+    return res + 1
+    //T = O(n) n : menNumber
+    // R = O(1)
 }
 
 /**
