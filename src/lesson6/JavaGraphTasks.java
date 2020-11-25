@@ -3,12 +3,10 @@ package lesson6;
 
 import kotlin.NotImplementedError;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
 import java.util.*;
 
 @SuppressWarnings("unused")
@@ -41,37 +39,38 @@ public class JavaGraphTasks {
      * Справка: Эйлеров цикл -- это цикл, проходящий через все рёбра
      * связного графа ровно по одному разу
      */
+    //Трудоемкость: O(Vertex + Edge)
     public static List<Graph.Edge> findEulerLoop(Graph graph) {
-       List<Graph.Edge> result = new ArrayList<>();
-       if(graph.getEdges().size() == 0) return result;
-        Map<Graph.Vertex,Set<Graph.Vertex>> connect = new HashMap<>();
-        for(Graph.Vertex vertex : graph.getVertices()){
+        List<Graph.Edge> result = new ArrayList<>();
+        if (graph.getEdges().size() == 0) return result;
+        Map<Graph.Vertex, Set<Graph.Vertex>> connect = new HashMap<>();
+        for (Graph.Vertex vertex : graph.getVertices()) {
             connect.put(vertex, graph.getNeighbors(vertex));
-            if(connect.get(vertex).size() % 2 != 0) return result;
+            if (connect.get(vertex).size() % 2 != 0) return result;
         }
         Deque<Graph.Vertex> currentPath = new ArrayDeque<>();
 
         Graph.Vertex firstVertex = graph.getVertices().iterator().next();
         currentPath.add(firstVertex);
         List<Graph.Vertex> way = new ArrayList<>();
-        while(currentPath.size() != 0){
-           Graph.Vertex current = currentPath.getLast();
-           if(connect.get(current).size() != 0){
-               Graph.Vertex  next = connect.get(current).iterator().next();
-               connect.get(current).remove(next);
-               connect.get(next).remove(current);
-               currentPath.addLast(next);
+        while (currentPath.size() != 0) {
+            Graph.Vertex current = currentPath.getLast();
+            if (connect.get(current).size() != 0) {
+                Graph.Vertex next = connect.get(current).iterator().next();
+                connect.get(current).remove(next);
+                connect.get(next).remove(current);
+                currentPath.addLast(next);
 
-           }else{
-               currentPath.removeLast();
-               way.add(current);
-           }
+            } else {
+                currentPath.removeLast();
+                way.add(current);
+            }
         }
-        for(Graph.Vertex vertex : connect.keySet()){
-            if(connect.get(vertex).size() != 0) return result;
+        for (Graph.Vertex vertex : connect.keySet()) {
+            if (connect.get(vertex).size() != 0) return result;
         }
-        for(int i = 0; i < way.size() - 1; i++){
-            result.add(graph.getConnection(way.get(i),way.get(i+1)));
+        for (int i = 0; i < way.size() - 1; i++) {
+            result.add(graph.getConnection(way.get(i), way.get(i + 1)));
         }
         return result;
     }
@@ -158,23 +157,27 @@ public class JavaGraphTasks {
      *
      * Ответ: A, E, J, K, D, C, H, G, B, F, I
      */
+    //Ресурсоемкость: O(Vertex + Edge)
+    //Трудоемкость: O(Vertex * (Vertex + Edge))
     public static Path bestPath;
-    private static void findBestPath(Graph graph, Graph.Vertex currVertex,Path currPath){
+
+    private static void findBestPath(Graph graph, Graph.Vertex currVertex, Path currPath) {
         Graph.Vertex lastVertex = currPath.getVertices().get(currPath.getVertices().size() - 1);
-        for(Graph.Vertex vertex : graph.getNeighbors(lastVertex)){
-            if(currPath.contains(vertex)) continue;
-            Path newPath = new Path(currPath,graph,vertex);
-            if(bestPath.getLength() < newPath.getLength()) {
+        for (Graph.Vertex vertex : graph.getNeighbors(lastVertex)) {
+            if (currPath.contains(vertex)) continue;
+            Path newPath = new Path(currPath, graph, vertex);
+            if (bestPath.getLength() < newPath.getLength()) {
                 bestPath = newPath;
             }
-            findBestPath(graph,vertex,newPath);
+            findBestPath(graph, vertex, newPath);
         }
     }
+
     public static Path longestSimplePath(Graph graph) {
         bestPath = new Path();
-        for(Graph.Vertex vertex : graph.getVertices()){
+        for (Graph.Vertex vertex : graph.getVertices()) {
             if (bestPath.getVertices().size() == graph.getVertices().size()) break;
-             findBestPath(graph,vertex, new Path(vertex));
+            findBestPath(graph, vertex, new Path(vertex));
         }
         return bestPath;
     }
@@ -233,7 +236,7 @@ public class JavaGraphTasks {
         return false;
     }
 
-    static public Set<String> baldaSearcher(String inputName, Set<String> words) throws IOException, IOException {
+    static public Set<String> baldaSearcher(String inputName, Set<String> words) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(new File(inputName)));
         String str = br.readLine();
         List<String> list = new ArrayList<>();
