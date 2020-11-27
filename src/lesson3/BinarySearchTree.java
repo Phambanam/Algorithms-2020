@@ -151,15 +151,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
     public class BinarySearchTreeIterator implements Iterator<T> {
         private T lastElement  ;
-        private Queue<T> elementData = new LinkedList<>();
-        public BinarySearchTreeIterator(){
-            if(root != null) addQueue(root,elementData);
-        }
-        private void addQueue(Node<T> node, Queue<T> elementData){
-            if(node.left != null) addQueue(node.left,elementData);
-            elementData.add(node.value);
-            if(node.right != null) addQueue(node.right,elementData);
-        }
+        Node<T> currNode = root;
+        private final Stack<Node<T>> stack = new Stack<>();
+
+
 
         /**
          * Проверка наличия следующего элемента
@@ -173,7 +168,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          */
         @Override
         public boolean hasNext() {
-            return elementData.peek() != null;
+            return !stack.isEmpty() || currNode != null ;
         }
 
         /**
@@ -191,9 +186,15 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          */
         @Override
         public T next() {
-            if(elementData.peek() == null) throw new IllegalStateException();
-           lastElement = elementData.remove();
-           return  lastElement;
+            while (currNode!= null) {
+                stack.add(currNode);
+                currNode = currNode.left;
+            }
+            if (!hasNext()) throw new IllegalStateException();
+            currNode = stack.pop();
+            lastElement = currNode.value;
+            currNode = currNode.right;
+           return lastElement;
         }
 
         /**
@@ -211,8 +212,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         @Override
         public void remove() {
             if(lastElement == null) throw new IllegalStateException();
-            if( !BinarySearchTree.this.remove(lastElement)) throw new IllegalStateException();
-
+            if( !BinarySearchTree.this.remove(lastElement)) throw new IllegalStateException() ;
         }
     }
 
