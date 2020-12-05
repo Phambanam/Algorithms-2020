@@ -120,7 +120,7 @@ public class JavaDynamicTasks {
             for (int j = 0; j < array.length; j++) {
                 int element = Integer.parseInt(array[j]);
                 if (i == 0 && j == 0) {
-                    matrix[i][j] = new Pair(0, 0);
+                    matrix[i][j] = new Pair<>(0, 0);
                 } else if (i == 0) {
                     matrix[i][j] = new Pair<>(element, matrix[i][j - 1].component2() + matrix[i][j - 1].component1());
                 } else if (j == 0) {
