@@ -161,7 +161,7 @@ public class JavaGraphTasks {
      * Ответ: A, E, J, K, D, C, H, G, B, F, I
      */
     //Ресурсоемкость: O(Vertex + Edge)
-    //Трудоемкость: O(Vertex * (Vertex + Edge))
+    //Трудоемкость: O(Vertex * Vertex)
     public static Path bestPath;
 
     private static void findBestPath(Graph graph, Graph.Vertex currVertex, Path currPath) {
