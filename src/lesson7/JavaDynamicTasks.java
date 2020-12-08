@@ -1,6 +1,5 @@
 package lesson7;
 
-import kotlin.NotImplementedError;
 import kotlin.Pair;
 
 import java.io.BufferedReader;
@@ -25,8 +24,30 @@ public class JavaDynamicTasks {
      * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
      * При сравнении подстрок, регистр символов *имеет* значение.
      */
+    //трудоёмкост - О(n*m),
+    // ресурсоёмкост - О(n*m)
     public static String longestCommonSubSequence(String first, String second) {
-        throw new NotImplementedError();
+        StringBuilder result = new StringBuilder();
+        int m = first.length();
+        int n = second.length();
+        int[][] arr = new int[m + 1][n + 1];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 || j == 0) arr[i][j] = 0;
+                else if (first.charAt(i - 1) == second.charAt(j - 1)) arr[i][j] = arr[i - 1][j - 1] + 1;
+                else arr[i][j] = Math.max(arr[i - 1][j], arr[i][j - 1]);
+            }
+        }
+        while (m > 0 && n > 0) {
+            if (first.charAt(m - 1) == second.charAt(n - 1)) {
+                result.append(first.charAt(m - 1));
+                m--;
+                n--;
+            } else
+                if(arr[m-1][n] > arr[m][n-1]) m--;
+                else n--;
+        }
+        return result.reverse().toString();
     }
 
     /**

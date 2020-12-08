@@ -74,6 +74,7 @@ public class JavaGraphTasks {
         for (int i = 0; i < way.size() - 1; i++) {
             result.add(graph.getConnection(way.get(i), way.get(i + 1)));
         }
+       
 
         return result;
     }
